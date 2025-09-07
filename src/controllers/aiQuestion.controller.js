@@ -18,6 +18,9 @@ class AIQuestionController {
         // Buscar la última conversación activa del usuario o crear una nueva
         if (conversation_id !== undefined) {
             conversation = await this.serviceConversation.findById(conversation_id);
+            if (!conversation) {
+                return ApiResponse.error(res, { error: 'Conversation not found', route: this.routes, status: 404 });
+            }
         } else {
             conversation = await this.serviceConversation.create({ user_id });
         }
