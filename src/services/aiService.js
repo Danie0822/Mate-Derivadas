@@ -1,33 +1,55 @@
+
 const axios = require('axios');
 
-// Puedes obtener un token gratuito de HuggingFace en https://huggingface.co/settings/tokens
-const HUGGINGFACE_API_TOKEN = process.env.HF_API_TOKEN || '';
-const MODEL_URL = 'https://api-inference.huggingface.co/models/google/gemma-2b-it'; // Modelo instructivo general, gratuito
+// Usa el modelo "mistral" por defecto, puedes cambiarlo por otro compatible con Ollama si lo deseas
+const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'mistral';
+
+
+const { Readable } = require('stream');
 
 async function getAIAnswer(question) {
     try {
+        // Forzar streaming: true para Ollama
         const response = await axios.post(
-            MODEL_URL,
-            { inputs: question },
+            `${OLLAMA_URL}/api/chat`,
+            {
+                model: OLLAMA_MODEL,
+                messages: [
+                    { role: 'system', content: 'Eres un experto en matemáticas. Responde de forma clara y precisa, en español, especialmente sobre derivadas.' },
+                    { role: 'user', content: question }
+                ],
+                stream: true
+            },
             {
                 headers: {
-                    Authorization: `Bearer ${HUGGINGFACE_API_TOKEN}`,
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                timeout: 30000,
+                responseType: 'stream',
+                timeout: 60000 // 60 segundos
             }
         );
-        // El formato de respuesta puede variar según el modelo
-        if (Array.isArray(response.data)) {
-            return response.data[0]?.generated_text || 'No answer generated.';
+
+        // Leer el stream y concatenar los fragmentos
+        let full = '';
+        const stream = response.data;
+        for await (const chunk of stream) {
+            const lines = chunk.toString().split('\n').filter(Boolean);
+            for (const line of lines) {
+                try {
+                    const data = JSON.parse(line);
+                    if (data.message && data.message.content) {
+                        full += data.message.content;
+                    }
+                } catch (e) {
+                    // Ignorar líneas que no sean JSON
+                }
+            }
         }
-        if (response.data.generated_text) {
-            return response.data.generated_text;
-        }
-        return JSON.stringify(response.data);
+        return full.trim() || 'No se pudo obtener respuesta de Ollama.';
     } catch (error) {
-        console.error('Error from HuggingFace API:', error?.response?.data || error.message || error);
-        return 'Error getting answer from AI.';
+        console.error('Error from Ollama API:', error?.response?.data || error.message || error);
+        return 'Error getting answer from Ollama.';
     }
 }
 

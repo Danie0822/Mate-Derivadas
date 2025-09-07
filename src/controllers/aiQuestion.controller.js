@@ -14,6 +14,7 @@ class AIQuestionController {
         const answer = await getAIAnswer(question);
         // Guarda en historial
         const dataCreate = await this.service.create({ user_id, question, answer });
+        console.log('Created AIQuestion:', answer);
         if (dataCreate) {
             return ApiResponse.success(res, { data: dataCreate, route: this.routes, message: 'AI answer generated' });
         }
