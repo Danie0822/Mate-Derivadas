@@ -18,7 +18,7 @@ const {
 
 /**
  * @swagger
- * /api/user-progress:
+ * /user-progress:
  *   post:
  *     summary: Create a new user progress record
  *     tags: [UserProgress]
@@ -42,7 +42,7 @@ router.post(
 
 /**
  * @swagger
- * /api/user-progress:
+ * /user-progress:
  *   get:
  *     summary: Get all user progress records
  *     tags: [UserProgress]
@@ -54,7 +54,7 @@ router.get('/', UserProgressController.getAll);
 
 /**
  * @swagger
- * /api/user-progress/{id}:
+ * /user-progress/{id}:
  *   get:
  *     summary: Get a user progress record by ID
  *     tags: [UserProgress]
@@ -75,7 +75,7 @@ router.get('/:id', validateRequest(readUserProgressRequestSchema), UserProgressC
 
 /**
  * @swagger
- * /api/user-progress/{id}:
+ * /user-progress/{id}:
  *   put:
  *     summary: Update a user progress record
  *     tags: [UserProgress]
@@ -106,7 +106,7 @@ router.put(
 
 /**
  * @swagger
- * /api/user-progress/{id}:
+ * /user-progress/{id}:
  *   delete:
  *     summary: Delete a user progress record
  *     tags: [UserProgress]

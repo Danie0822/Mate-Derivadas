@@ -18,7 +18,7 @@ const {
 
 /**
  * @swagger
- * /api/study-guides:
+ * /study-guides:
  *   post:
  *     summary: Create a new study guide
  *     tags: [StudyGuides]
@@ -42,7 +42,7 @@ router.post(
 
 /**
  * @swagger
- * /api/study-guides:
+ * /study-guides:
  *   get:
  *     summary: Get all study guides
  *     tags: [StudyGuides]
@@ -54,7 +54,7 @@ router.get('/', StudyGuideController.getAll);
 
 /**
  * @swagger
- * /api/study-guides/{id}:
+ * /study-guides/{id}:
  *   get:
  *     summary: Get a study guide by ID
  *     tags: [StudyGuides]
@@ -75,7 +75,7 @@ router.get('/:id', validateRequest(readStudyGuideRequestSchema), StudyGuideContr
 
 /**
  * @swagger
- * /api/study-guides/{id}:
+ * /study-guides/{id}:
  *   put:
  *     summary: Update a study guide
  *     tags: [StudyGuides]
@@ -106,7 +106,7 @@ router.put(
 
 /**
  * @swagger
- * /api/study-guides/{id}:
+ * /study-guides/{id}:
  *   delete:
  *     summary: Delete a study guide
  *     tags: [StudyGuides]

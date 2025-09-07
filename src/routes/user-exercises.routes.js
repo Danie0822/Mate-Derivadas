@@ -18,7 +18,7 @@ const {
 
 /**
  * @swagger
- * /api/user-exercises:
+ * /user-exercises:
  *   post:
  *     summary: Create a new user exercise record
  *     tags: [UserExercises]
@@ -42,7 +42,7 @@ router.post(
 
 /**
  * @swagger
- * /api/user-exercises:
+ * /user-exercises:
  *   get:
  *     summary: Get all user exercise records
  *     tags: [UserExercises]
@@ -54,7 +54,7 @@ router.get('/', UserExerciseController.getAll);
 
 /**
  * @swagger
- * /api/user-exercises/{id}:
+ * /user-exercises/{id}:
  *   get:
  *     summary: Get a user exercise record by ID
  *     tags: [UserExercises]
@@ -75,7 +75,7 @@ router.get('/:id', validateRequest(readUserExerciseRequestSchema), UserExerciseC
 
 /**
  * @swagger
- * /api/user-exercises/{id}:
+ * /user-exercises/{id}:
  *   put:
  *     summary: Update a user exercise record
  *     tags: [UserExercises]
@@ -106,7 +106,7 @@ router.put(
 
 /**
  * @swagger
- * /api/user-exercises/{id}:
+ * /user-exercises/{id}:
  *   delete:
  *     summary: Delete a user exercise record
  *     tags: [UserExercises]

@@ -16,7 +16,7 @@ const {
 
 /**
  * @swagger
- * /api/ai-questions/ask:
+ * /ai-questions/ask:
  *   post:
  *     summary: Ask a question to the AI
  *     tags: [AIQuestions]
@@ -40,7 +40,7 @@ router.post(
 
 /**
  * @swagger
- * /api/ai-questions:
+ * /ai-questions:
  *   get:
  *     summary: Get all AI question records
  *     tags: [AIQuestions]
@@ -52,7 +52,7 @@ router.get('/', AIQuestionController.getAll);
 
 /**
  * @swagger
- * /api/ai-questions/{id}:
+ * /ai-questions/{id}:
  *   get:
  *     summary: Get an AI question record by ID
  *     tags: [AIQuestions]
