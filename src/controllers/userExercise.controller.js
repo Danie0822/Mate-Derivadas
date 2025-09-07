@@ -2,11 +2,16 @@
 const CrudService = require('../services/crudService');
 const catchErrors = require('../utils/tryCatch');
 const ApiResponse = require('../utils/apiResponse');
-const { UserExercise } = require('../models');
+const { UserExercise, User } = require('../models');
 
 class UserExerciseController {
     static service = new CrudService(UserExercise);
     static routes = '/user-exercises';
+    static Include = [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'full_name']
+    }];
 
     static save = catchErrors(async (req, res, next) => {
         const dataCreate = await this.service.create(req.body);
@@ -25,12 +30,12 @@ class UserExerciseController {
     });
 
     static getAll = catchErrors(async (req, res, next) => {
-        const data = await this.service.findAll();
+        const data = await this.service.findAll({ include: this.Include });
         return ApiResponse.success(res, { data, route: this.routes, message: 'UserExercise list' });
     });
 
     static getById = catchErrors(async (req, res, next) => {
-        const data = await this.service.findById(req.params.id);
+        const data = await this.service.findById(req.params.id, { include: this.Include });
         if (data) {
             return ApiResponse.success(res, { data, route: this.routes });
         }

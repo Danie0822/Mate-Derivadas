@@ -3,6 +3,16 @@ const { DataTypes } = require('sequelize');
 const BaseEntity = require('./base.entity'); // Solo si usas una clase base
 
 class User extends BaseEntity {
+    static associate(models) {
+        this.hasMany(models.UserProgress, {
+            foreignKey: 'user_id',
+            as: 'progress'
+        });
+        this.hasMany(models.UserExercise, {
+            foreignKey: 'user_id',
+            as: 'exercises'
+        });
+    }
     static initModel(sequelize) {
         super.init(
             {

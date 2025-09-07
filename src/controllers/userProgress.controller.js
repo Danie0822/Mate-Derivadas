@@ -1,12 +1,23 @@
 const CrudService = require('../services/crudService');
 const catchErrors = require('../utils/tryCatch');
 const ApiResponse = require('../utils/apiResponse');
-const { UserProgress } = require('../models');
+const { UserProgress, StudyGuide, User } = require('../models');
 
 class UserProgressController {
     static service = new CrudService(UserProgress);
     static routes = '/user-progress';
-
+    
+    static include = [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'full_name']
+    },
+    {
+        model: StudyGuide,
+        as: 'studyGuide',
+        attributes: ['id', 'title']
+    }
+    ];
     static save = catchErrors(async (req, res, next) => {
         const dataCreate = await this.service.create(req.body);
         if (dataCreate) {
@@ -24,12 +35,12 @@ class UserProgressController {
     });
 
     static getAll = catchErrors(async (req, res, next) => {
-        const data = await this.service.findAll();
+        const data = await this.service.findAll({ include: this.include });
         return ApiResponse.success(res, { data, route: this.routes, message: 'UserProgress list' });
     });
 
     static getById = catchErrors(async (req, res, next) => {
-        const data = await this.service.findById(req.params.id);
+        const data = await this.service.findById(req.params.id, { include: this.include });
         if (data) {
             return ApiResponse.success(res, { data, route: this.routes });
         }

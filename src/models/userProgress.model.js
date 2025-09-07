@@ -2,6 +2,16 @@ const { DataTypes } = require('sequelize');
 const BaseEntity = require('./base.entity');
 
 class UserProgress extends BaseEntity {
+     static associate(models) {
+        this.belongsTo(models.User, {
+            foreignKey: 'user_id',
+            as: 'user'
+        });
+        this.belongsTo(models.StudyGuide, {
+            foreignKey: 'study_guide_id',
+            as: 'studyGuide'
+        });
+    }
     static initModel(sequelize) {
         super.init(
             {

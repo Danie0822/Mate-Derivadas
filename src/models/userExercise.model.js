@@ -2,6 +2,16 @@ const { DataTypes } = require('sequelize');
 const BaseEntity = require('./base.entity');
 
 class UserExercise extends BaseEntity {
+    static associate(models) {
+        this.belongsTo(models.User, {
+            foreignKey: 'user_id',
+            as: 'user'
+        });
+        this.belongsTo(models.Exercise, {
+            foreignKey: 'exercise_id',
+            as: 'exercise'
+        });
+    }
     static initModel(sequelize) {
         super.init(
             {
