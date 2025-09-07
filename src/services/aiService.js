@@ -26,6 +26,7 @@ async function getAIAnswer(question) {
         }
         return JSON.stringify(response.data);
     } catch (error) {
+        console.error('Error from HuggingFace API:', error?.response?.data || error.message || error);
         return 'Error getting answer from AI.';
     }
 }
