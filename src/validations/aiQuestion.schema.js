@@ -20,6 +20,11 @@ const { z } = require('zod');
  *           format: uuid
  *           description: The user ID.
  *           example: "550e8400-e29b-41d4-a716-446655440000"
+ *         conversation_id:
+ *           type: string
+ *           format: uuid
+ *           description: The conversation ID.
+ *           example: "550e8400-e29b-41d4-a716-446655440000"
  *         question:
  *           type: string
  *           description: The user's question.
@@ -40,6 +45,7 @@ const aiQuestionSchema = z.object({
   question: z.string({ required_error: 'Question is required' })
     .min(2, 'Question must be at least 2 characters'),
   answer: z.string().optional(),
+  conversation_id: z.string().uuid().optional(),
 });
 
 const askAIQuestionRequestSchema = z.object({

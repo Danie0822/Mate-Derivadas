@@ -1,11 +1,12 @@
 const { DataTypes } = require('sequelize');
 const BaseEntity = require('./base.entity');
 
+
 class AIQuestion extends BaseEntity {
     static initModel(sequelize) {
         super.init(
             {
-                user_id: {
+                conversation_id: {
                     type: DataTypes.UUID,
                     allowNull: false
                 },
@@ -24,6 +25,10 @@ class AIQuestion extends BaseEntity {
                 tableName: 'ai_questions'
             }
         );
+    }
+
+    static associate(models) {
+        AIQuestion.belongsTo(models.Conversation, { foreignKey: 'conversation_id' });
     }
 }
 

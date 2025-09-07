@@ -10,15 +10,12 @@ const { Readable } = require('stream');
 
 async function getAIAnswer(question) {
     try {
-        // Forzar streaming: true para Ollama
+        // Ahora 'question' es un array de mensajes, no un string
         const response = await axios.post(
             `${OLLAMA_URL}/api/chat`,
             {
                 model: OLLAMA_MODEL,
-                messages: [
-                    { role: 'system', content: 'Eres un experto en matemáticas. Responde de forma clara y precisa, en español, especialmente sobre derivadas.' },
-                    { role: 'user', content: question }
-                ],
+                messages: question, // question es un array de mensajes
                 stream: true
             },
             {

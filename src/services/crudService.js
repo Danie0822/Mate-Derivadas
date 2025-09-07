@@ -38,6 +38,15 @@ class CrudService {
   }
 
   /**
+   * Retorna el primer registro que coincide con los criterios de búsqueda.
+   * @param {object} criteria - Criterios de búsqueda.
+   * @returns {Promise<any|null>} - Registro encontrado o null si no existe.
+   */
+  async findOne(criteria) {
+    return this.model.findOne({ where: criteria });
+  }
+
+  /**
    * Actualiza un registro por su ID (UUID).
    * @param {string} id - UUID del registro a actualizar.
    * @param {object} data - Datos nuevos a actualizar.
