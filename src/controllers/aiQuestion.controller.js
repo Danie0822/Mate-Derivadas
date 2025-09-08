@@ -2,14 +2,30 @@
 const CrudService = require('../services/crudService');
 const catchErrors = require('../utils/tryCatch');
 const ApiResponse = require('../utils/apiResponse');
-const { AIQuestion, Conversation } = require('../models');
+const { AIQuestion, Conversation, User } = require('../models');
 const { getAIAnswer } = require('../services/aiService');
+const { includes } = require('zod/v4');
 
 
 class AIQuestionController {
     static service = new CrudService(AIQuestion);
     static serviceConversation = new CrudService(Conversation);
     static routes = '/ai-questions';
+    static includesConversation = [{
+        model: User,
+        as: 'user',
+        attributes: ['id', 'full_name']
+    }];
+    static Include = [{
+        model: Conversation,
+        as: 'conversation',
+         attributes: ['id', 'user_id'],
+        include: {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'full_name']
+        }
+    }];
 
     // req.body: { user_id, question, conversation_id? }
     static ask = catchErrors(async (req, res, next) => {
@@ -48,14 +64,23 @@ class AIQuestionController {
         }
         return ApiResponse.error(res, { dataCreate, route: this.routes });
     });
+    // Obtener conversaciones del usuario
+    static getConversationUser = catchErrors(async (req, res, next) => {
+        const { user_id } = req.params;
+        const conversations = await this.serviceConversation.findAll({ where: { user_id }, include: this.includesConversation });
+        if (conversations) {
+            return ApiResponse.success(res, { data: conversations, route: this.routes });
+        }
+        return ApiResponse.error(res, { error: 'Conversation not found', route: this.routes, status: 404 });
+    });
 
     static getAll = catchErrors(async (req, res, next) => {
-        const data = await this.service.findAll();
+        const data = await this.service.findAll({ include: this.Include });
         return ApiResponse.success(res, { data, route: this.routes, message: 'AIQuestion list' });
     });
 
     static getById = catchErrors(async (req, res, next) => {
-        const data = await this.service.findById(req.params.id);
+        const data = await this.service.findById(req.params.id, { include: this.Include });
         if (data) {
             return ApiResponse.success(res, { data, route: this.routes });
         }

@@ -4,8 +4,34 @@ const AIQuestionController = require('../controllers/aiQuestion.controller');
 const validateRequest = require('../utils/validateRequest');
 const {
     askAIQuestionRequestSchema,
-    readAIQuestionRequestSchema
+    readAIQuestionRequestSchema,
+    getConversationUserRequestSchema
 } = require('../validations/aiQuestion.schema');
+/**
+ * @swagger
+ * /ai-questions/user/{user_id}:
+ *   get:
+ *     summary: Obtener todas las conversaciones de un usuario
+ *     tags: [AIQuestions]
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Lista de conversaciones del usuario
+ *       404:
+ *         description: No se encontraron conversaciones
+ */
+router.get(
+    '/user/:user_id',
+    validateRequest(getConversationUserRequestSchema),
+    AIQuestionController.getConversationUser
+);
 
 /**
  * @swagger

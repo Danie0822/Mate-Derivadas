@@ -20,8 +20,8 @@ class Conversation extends BaseEntity {
   }
 
   static associate(models) {
-    Conversation.belongsTo(models.User, { foreignKey: 'user_id' });
-    Conversation.hasMany(models.AIQuestion, { foreignKey: 'conversation_id' });
+    Conversation.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
+    Conversation.hasMany(models.AIQuestion, { foreignKey: 'conversation_id', as: 'aiQuestions' });
   }
 }
 

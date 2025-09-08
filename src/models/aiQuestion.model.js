@@ -28,7 +28,7 @@ class AIQuestion extends BaseEntity {
     }
 
     static associate(models) {
-        AIQuestion.belongsTo(models.Conversation, { foreignKey: 'conversation_id' });
+        AIQuestion.belongsTo(models.Conversation, { foreignKey: 'conversation_id', as: 'conversation' });
     }
 }
 

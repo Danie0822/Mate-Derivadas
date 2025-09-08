@@ -12,6 +12,10 @@ class User extends BaseEntity {
             foreignKey: 'user_id',
             as: 'exercises'
         });
+        this.hasMany(models.Conversation, {
+            foreignKey: 'user_id',
+            as: 'conversations'
+        });
     }
     static initModel(sequelize) {
         super.init(

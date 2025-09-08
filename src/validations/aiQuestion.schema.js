@@ -52,6 +52,13 @@ const askAIQuestionRequestSchema = z.object({
   body: aiQuestionSchema.omit({ id: true, answer: true }),
 });
 
+
+const getConversationUserRequestSchema = z.object({
+  params: z.object({
+    user_id: z.string().uuid({ message: 'User ID must be a valid UUID' })
+  })
+});
+
 const readAIQuestionRequestSchema = z.object({
   params,
 });
@@ -59,4 +66,5 @@ const readAIQuestionRequestSchema = z.object({
 module.exports = {
   askAIQuestionRequestSchema,
   readAIQuestionRequestSchema,
+  getConversationUserRequestSchema,
 };
