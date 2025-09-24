@@ -37,6 +37,16 @@ const { z } = require('zod');
  *           type: object
  *           description: The solution to the exercise.
  *           example: { "answer": "2x" }
+ *         topic:
+ *           type: string
+ *           description: The topic or category of the exercise.
+ *           example: "Derivatives"
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Tags associated with the exercise.
+ *           example: ["calculus", "basic", "polynomial"]
  */
 
 const params = z.object({
