@@ -48,10 +48,12 @@ const exerciseSchema = z.object({
   title: z.string({ required_error: 'Title is required' })
     .min(2, 'Title must be at least 2 characters')
     .max(255, 'Title must not exceed 255 characters'),
-  description: z.string().max(1000, 'Description too long').nullable().optional(),
+  description: z.string().max(10000, 'Description too long').nullable().optional(),
   difficulty: z.enum(['easy', 'medium', 'hard'], { required_error: 'Difficulty is required' }),
   content: z.record(z.any(), { required_error: 'Content is required' }),
   solution: z.record(z.any()).optional(),
+  topic: z.string().max(255, 'Topic too long').nullable().optional(),
+  tags: z.array(z.string()).nullable().optional().default([]),
 });
 
 const readExerciseRequestSchema = z.object({

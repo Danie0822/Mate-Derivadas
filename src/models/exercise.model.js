@@ -31,6 +31,15 @@ class Exercise extends BaseEntity {
                 solution: {
                     type: DataTypes.JSONB,
                     allowNull: true
+                },
+                topic: {
+                    type: DataTypes.STRING(255),
+                    allowNull: true
+                },
+                tags: {
+                    type: DataTypes.JSONB,
+                    allowNull: true,
+                    defaultValue: []
                 }
             },
             {
