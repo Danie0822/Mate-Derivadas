@@ -13,6 +13,7 @@ class StudyGuide extends BaseEntity {
           type: DataTypes.TEXT,
           allowNull: true
         },
+        // Campos originales del compañero (organización temporal)
         week: {
           type: DataTypes.INTEGER,
           allowNull: false
@@ -23,7 +24,37 @@ class StudyGuide extends BaseEntity {
         },
         resources: {
           type: DataTypes.JSONB,
-          allowNull: true
+          allowNull: true,
+          comment: 'Recursos externos: videos, links, PDFs'
+        },
+        // Campos híbridos añadidos (categorización educativa)
+        topic: {
+          type: DataTypes.STRING(255),
+          allowNull: true,
+          comment: 'Tema o categoría de la guía'
+        },
+        level: {
+          type: DataTypes.ENUM('beginner', 'intermediate', 'advanced'),
+          allowNull: true,
+          defaultValue: 'beginner',
+          comment: 'Nivel de dificultad'
+        },
+        tags: {
+          type: DataTypes.JSONB,
+          allowNull: true,
+          defaultValue: [],
+          comment: 'Etiquetas para búsqueda'
+        },
+        content: {
+          type: DataTypes.JSONB,
+          allowNull: true,
+          comment: 'Contenido educativo interno'
+        },
+        exercises: {
+          type: DataTypes.JSONB,
+          allowNull: true,
+          defaultValue: [],
+          comment: 'Referencias a ejercicios relacionados'
         }
       },
       {

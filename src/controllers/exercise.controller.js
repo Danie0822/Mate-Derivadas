@@ -43,6 +43,13 @@ class ExerciseController {
         }
         return ApiResponse.error(res, { error: 'Exercise not found', route: this.routes, status: 404 });
     });
+
+    static selectAll = catchErrors(async (req, res, next) => {
+        const data = await this.service.findAll({
+            attributes: ['id', 'title', 'topic']
+        });
+        return ApiResponse.success(res, { data, route: this.routes, message: 'Exercise select list' });
+    });
 }
 
 module.exports = ExerciseController;

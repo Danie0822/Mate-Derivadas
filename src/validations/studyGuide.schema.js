@@ -34,10 +34,35 @@ const { z } = require('zod');
  *           example: 2
  *         resources:
  *           type: array
- *           description: List of resources for the study guide.
+ *           description: External resources (videos, links, PDFs).
  *           items:
  *             type: object
- *           example: [{ "type": "video", "url": "https://example.com/video" }]
+ *           example: [{ "type": "video", "url": "https://example.com/video", "title": "Intro Video" }]
+ *         topic:
+ *           type: string
+ *           description: Topic or category of the study guide.
+ *           example: "Derivatives"
+ *         level:
+ *           type: string
+ *           enum: [beginner, intermediate, advanced]
+ *           description: Difficulty level of the guide.
+ *           example: "beginner"
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Tags for categorization and search.
+ *           example: ["calculus", "basic", "theory"]
+ *         content:
+ *           type: object
+ *           description: Rich educational content (theory, examples, notes).
+ *           example: { "introduction": "<p>Learning objectives...</p>", "theory": "<div>Theory content...</div>" }
+ *         exercises:
+ *           type: array
+ *           items:
+ *             type: object
+ *           description: Related exercises with metadata.
+ *           example: [{ "exercise_id": "uuid", "title": "Practice Problem", "order": 1, "required": true }]
  */
 
 const params = z.object({
@@ -49,10 +74,17 @@ const studyGuideSchema = z.object({
   title: z.string({ required_error: 'Title is required' })
     .min(2, 'Title must be at least 2 characters')
     .max(255, 'Title must not exceed 255 characters'),
-  description: z.string().max(1000, 'Description too long').nullable().optional(),
+  description: z.string().max(10000, 'Description too long').nullable().optional(),
+  // Campos originales (organización temporal)
   week: z.number({ required_error: 'Week is required' }).int().min(1),
   day: z.number({ required_error: 'Day is required' }).int().min(1),
   resources: z.array(z.record(z.any())).optional(),
+  // Campos híbridos (categorización educativa)
+  topic: z.string().max(255, 'Topic too long').nullable().optional(),
+  level: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
+  tags: z.array(z.string()).optional(),
+  content: z.record(z.any()).optional(),
+  exercises: z.array(z.record(z.any())).optional(),
 });
 
 const readStudyGuideRequestSchema = z.object({

@@ -125,4 +125,16 @@ router.put(
  */
 router.delete('/:id', validateRequest(deleteExerciseRequestSchema), ExerciseController.destroy);
 
+/**
+ * @swagger
+ * /exercises/select/all:
+ *   get:
+ *     summary: Get all exercises for select component (id, title, topic only)
+ *     tags: [Exercises]
+ *     responses:
+ *       200:
+ *         description: Exercise select list
+ */
+router.get('/select/all', ExerciseController.selectAll);
+
 module.exports = router;

@@ -125,4 +125,48 @@ router.put(
  */
 router.delete('/:id', validateRequest(deleteStudyGuideRequestSchema), StudyGuideController.destroy);
 
+/**
+ * @swagger
+ * /study-guides/{id}/exercises:
+ *   get:
+ *     summary: Get exercises related to a study guide
+ *     tags: [StudyGuides]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Study guide ID
+ *     responses:
+ *       200:
+ *         description: List of related exercises with metadata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     allOf:
+ *                       - $ref: '#/components/schemas/Exercise'
+ *                       - type: object
+ *                         properties:
+ *                           order:
+ *                             type: integer
+ *                             description: Order of exercise in study guide
+ *                           required:
+ *                             type: boolean
+ *                             description: Whether exercise is required
+ *                           notes:
+ *                             type: string
+ *                             description: Additional notes from study guide
+ *       404:
+ *         description: Study guide not found
+ */
+router.get('/:id/exercises', validateRequest(readStudyGuideRequestSchema), StudyGuideController.getRelatedExercises);
+
 module.exports = router;
