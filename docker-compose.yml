@@ -12,7 +12,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app
+      - .:/appdocker-compose logs -f db
       - /app/node_modules
 
   db:
