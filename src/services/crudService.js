@@ -39,11 +39,35 @@ class CrudService {
 
   /**
    * Retorna el primer registro que coincide con los criterios de búsqueda.
-   * @param {object} criteria - Criterios de búsqueda.
+   * @param {object} options - Opciones de consulta de Sequelize (where, order, include, etc.).
    * @returns {Promise<any|null>} - Registro encontrado o null si no existe.
    */
-  async findOne(criteria) {
-    return this.model.findOne({ where: criteria });
+  async findOne(options = {}) {
+    // Si options ya tiene la estructura completa (con where, order, etc.), usarlo directamente
+    // Si options es solo criterios simples, envolver en { where: options }
+    if (options.where || options.order || options.include || options.limit) {
+      return this.model.findOne(options);
+    } else {
+      return this.model.findOne({ where: options });
+    }
+  }
+
+  /**
+   * Retorna registros y el conteo total con paginación.
+   * @param {object} [options] - Opciones de consulta de Sequelize (where, limit, offset, include, etc.).
+   * @returns {Promise<{count: number, rows: any[]}>} - Objeto con count y rows.
+   */
+  async findAndCountAll(options = {}) {
+    return this.model.findAndCountAll(options);
+  }
+
+  /**
+   * Cuenta el número de registros que coinciden con los criterios.
+   * @param {object} [options] - Opciones de consulta de Sequelize (where, include, etc.).
+   * @returns {Promise<number>} - Número de registros.
+   */
+  async count(options = {}) {
+    return this.model.count(options);
   }
 
   /**
