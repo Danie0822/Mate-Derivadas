@@ -8,6 +8,101 @@ const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'mistral';
 
 const { Readable } = require('stream');
 
+/**
+ * Formatea el texto con expresiones matemáticas a LaTeX
+ * @param {string} text - Texto con expresiones matemáticas
+ * @returns {string} - Texto formateado con LaTeX
+ */
+function formatMathResponse(text) {
+    let result = text;
+    
+    // Primero, proteger las expresiones LaTeX existentes
+    const protectedExpressions = [];
+    result = result.replace(/\$\$[^$]*\$\$/g, (match, index) => {
+        const placeholder = `__PROTECTED_BLOCK_${protectedExpressions.length}__`;
+        protectedExpressions.push(match);
+        return placeholder;
+    });
+    result = result.replace(/\$[^$\n]*\$/g, (match, index) => {
+        const placeholder = `__PROTECTED_INLINE_${protectedExpressions.length}__`;
+        protectedExpressions.push(match);
+        return placeholder;
+    });
+    
+    // Formatear expresiones matemáticas comunes
+    result = result
+        // Funciones matemáticas comunes
+        .replace(/\b([a-zA-Z])\(([a-zA-Z])\)/g, '$$$1($2)$$') // f(x) -> $f(x)$
+        
+        // Potencias con paréntesis: (x)^2 -> $(x)^{2}$
+        .replace(/\(([^)]+)\)\^([0-9]+)/g, '$($1)^{$2}$')
+        
+        // Potencias simples: x^2 -> $x^{2}$
+        .replace(/\b([a-zA-Z]+)\^([0-9]+)/g, '$$$1^{$2}$$')
+        
+        // Fracciones explícitas
+        .replace(/\b([a-zA-Z0-9']+)\s*\/\s*([a-zA-Z0-9']+)\b/g, '$$\\frac{$1}{$2}$$')
+        
+        // Raíces cuadradas
+        .replace(/sqrt\(([^)]+)\)/g, '$$\\sqrt{$1}$$')
+        
+        // Símbolos griegos
+        .replace(/\bpi\b/g, '$\\pi$')
+        .replace(/\balpha\b/g, '$\\alpha$')
+        .replace(/\bbeta\b/g, '$\\beta$')
+        .replace(/\bgamma\b/g, '$\\gamma$')
+        .replace(/\bdelta\b/g, '$\\delta$')
+        .replace(/\btheta\b/g, '$\\theta$')
+        .replace(/\blambda\b/g, '$\\lambda$')
+        .replace(/\bmu\b/g, '$\\mu$')
+        .replace(/\bsigma\b/g, '$\\sigma$')
+        
+        // Funciones trigonométricas
+        .replace(/\b(sin|cos|tan|sec|csc|cot)\(/g, '$\\$1($')
+        .replace(/\b(sin|cos|tan|sec|csc|cot)\s+([a-zA-Z]+)/g, '$\\$1 $2$')
+        
+        // Logaritmos
+        .replace(/\bln\(/g, '$\\ln($')
+        .replace(/\blog\(/g, '$\\log($')
+        
+        // Límites
+        .replace(/\blim\b/g, '$\\lim$')
+        .replace(/limite\s+de/gi, '$\\lim$')
+        
+        // Integrales
+        .replace(/integral\s+de/gi, '$\\int$')
+        .replace(/∫/g, '$\\int$')
+        
+        // Infinito
+        .replace(/infinito/g, '$\\infty$')
+        .replace(/∞/g, '$\\infty$')
+        
+        // Derivadas
+        .replace(/d\/dx/g, '$\\frac{d}{dx}$')
+        .replace(/dy\/dx/g, '$\\frac{dy}{dx}$')
+        .replace(/([a-zA-Z])'(?!\w)/g, '$$$1\'$$') // f' -> $f'$
+        
+        // Variables con subíndices: x1, x2 -> $x_1$, $x_2$
+        .replace(/\b([a-zA-Z])([0-9]+)\b/g, '$$$1_{$2}$$');
+    
+    // Restaurar expresiones protegidas
+    protectedExpressions.forEach((expr, index) => {
+        result = result.replace(`__PROTECTED_BLOCK_${index}__`, expr);
+        result = result.replace(`__PROTECTED_INLINE_${index}__`, expr);
+    });
+    
+    // Limpiar espacios duplicados y mejorar formato
+    result = result
+        .replace(/\$\s+/g, '$')
+        .replace(/\s+\$/g, '$')
+        .replace(/\$\$\s*\$\$/g, '') // Eliminar $$ vacíos
+        .replace(/\$\s*\$/g, '') // Eliminar $ vacíos
+        .replace(/\s+/g, ' ') // Normalizar espacios
+        .trim();
+    
+    return result;
+}
+
 async function getAIAnswer(question) {
     try {
         console.log('🤖 Conectando a Ollama:', OLLAMA_URL);
@@ -69,7 +164,9 @@ async function getAIAnswer(question) {
         }
         
         console.log('✅ Stream procesado. Longitud de respuesta:', full.length);
-        return full.trim() || 'No se pudo obtener respuesta de Ollama.';
+        const formattedResponse = formatMathResponse(full.trim());
+        console.log('🔢 Respuesta formateada con LaTeX aplicado');
+        return formattedResponse || 'No se pudo obtener respuesta de Ollama.';
     } catch (error) {
         console.error('❌ Error from Ollama API:', {
             message: error.message,

@@ -56,7 +56,10 @@ class AIQuestionController {
         });
         // Construir el contexto para la IA
         const messages = [
-            { role: 'system', content: 'Eres un experto en matemáticas. Responde de forma clara y precisa, en español, especialmente sobre derivadas.' },
+            { 
+                role: 'system', 
+                content: 'Eres un profesor experto en matemáticas especializado en cálculo y derivadas. Responde SIEMPRE en español de forma clara y didáctica. REGLAS ESTRICTAS para matemáticas: 1) Usa LaTeX OBLIGATORIAMENTE: variables como $x$, $y$, funciones como $f(x)$, derivadas como $\\frac{dy}{dx}$ o $f\'(x)$, potencias como $x^2$, fracciones como $\\frac{a}{b}$. 2) Para ecuaciones importantes usa formato bloque: $$ecuación$$. 3) Nunca escribas matemáticas en texto plano. 4) Ejemplos correctos: "La derivada de $x^2$ es $2x$", "$$\\frac{d}{dx}(x^3) = 3x^2$$". 5) Explica paso a paso con ejemplos prácticos.' 
+            },
             ...history.flatMap(msg => [
                 { role: 'user', content: msg.question },
                 { role: 'assistant', content: msg.answer }
