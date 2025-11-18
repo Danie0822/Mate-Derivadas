@@ -78,6 +78,31 @@ router.get('/', AIQuestionController.getAll);
 
 /**
  * @swagger
+ * /ai-questions/conversation/{conversation_id}/history:
+ *   get:
+ *     summary: Get conversation message history
+ *     tags: [AIQuestions]
+ *     parameters:
+ *       - in: path
+ *         name: conversation_id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: ID de la conversación
+ *     responses:
+ *       200:
+ *         description: Historial de mensajes de la conversación
+ *       404:
+ *         description: Conversación no encontrada
+ */
+router.get(
+    '/conversation/:conversation_id/history',
+    AIQuestionController.getConversationHistory
+);
+
+/**
+ * @swagger
  * /ai-questions/{id}:
  *   get:
  *     summary: Get an AI question record by ID

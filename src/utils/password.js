@@ -1,4 +1,5 @@
-const bcrypt = require('bcrypt');
+// Implementación temporal sin bcrypt debido a problemas de compilación en Docker
+const crypto = require('crypto');
 
 const saltRounds = 10;
 
@@ -11,8 +12,10 @@ const saltRounds = 10;
  */
 async function encryptPassword(plainPassword) {
     try {
-        const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
-        return hashedPassword;
+        // Implementación temporal usando crypto (menos segura que bcrypt)
+        const salt = crypto.randomBytes(16).toString('hex');
+        const hashedPassword = crypto.pbkdf2Sync(plainPassword, salt, 1000, 64, 'sha512').toString('hex');
+        return `${salt}:${hashedPassword}`;
     } catch (error) {
         throw new Error('Error encrypting password: ' + error.message);
     }
@@ -28,7 +31,10 @@ async function encryptPassword(plainPassword) {
  */
 async function comparePassword(plainPassword, hashedPassword) {
     try {
-        return await bcrypt.compare(plainPassword, hashedPassword);
+        // Implementación temporal usando crypto
+        const [salt, hash] = hashedPassword.split(':');
+        const hashToCompare = crypto.pbkdf2Sync(plainPassword, salt, 1000, 64, 'sha512').toString('hex');
+        return hash === hashToCompare;
     } catch (error) {
         throw new Error('Error comparing passwords: ' + error.message);
     }

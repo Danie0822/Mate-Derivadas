@@ -4,6 +4,7 @@ const catchErrors = require('../utils/tryCatch');
 const ApiResponse = require('../utils/apiResponse');
 const { AIQuestion, Conversation, User } = require('../models');
 const { getAIAnswer } = require('../services/aiService');
+const ChatNameService = require('../services/chatNameService');
 
 
 class AIQuestionController {
@@ -26,18 +27,26 @@ class AIQuestionController {
         }
     }];
 
-    // req.body: { user_id, question, conversation_id? }
+    // req.body: { user_id, question, conversation_id?, is_chat_ia }
     static ask = catchErrors(async (req, res, next) => {
-        const { user_id, question, conversation_id } = req.body;
+        const { user_id, question, conversation_id, is_chat_ia } = req.body;
         let conversation;
-        // Buscar la última conversación activa del usuario o crear una nueva
-        if (conversation_id !== undefined) {
+        let isNewConversation = false;
+        
+        // Buscar la conversación existente o crear una nueva
+        if (conversation_id !== undefined && conversation_id !== null) {
             conversation = await this.serviceConversation.findById(conversation_id);
             if (conversation === null) {
                 return ApiResponse.error(res, { error: 'Conversation not found', route: this.routes, status: 404 });
             }
         } else {
-            conversation = await this.serviceConversation.create({ user_id });
+            // Crear nueva conversación
+            isNewConversation = true;
+            conversation = await this.serviceConversation.create({ 
+                user_id, 
+                is_chat_ia,
+                name: 'Nueva Conversación' // Nombre temporal
+            });
         }
 
         // Obtener historial de mensajes de la conversación
@@ -58,19 +67,50 @@ class AIQuestionController {
         const answer = await getAIAnswer(messages);
         // Guarda en historial
         const dataCreate = await this.service.create({ conversation_id: conversation.id, question, answer });
+        
+        // Si es una nueva conversación de chat IA, generar nombre basado en configuración
+        if (isNewConversation && is_chat_ia) {
+            try {
+                let chatName;
+                const generateChatName = process.env.GENERAR_NOMBRE_CHAT_IA === 'true';
+                
+                if (generateChatName) {
+                    chatName = await ChatNameService.generateChatName(question);
+                } else {
+                    // Usar la primera pregunta como nombre (limitada a 50 caracteres)
+                    chatName = question.length > 50 ? question.substring(0, 50) + '...' : question;
+                }
+                
+                await this.serviceConversation.update(conversation.id, { name: chatName });
+                conversation.name = chatName;
+            } catch (error) {
+                console.error('Error setting chat name:', error);
+            }
+        }
+        
         if (dataCreate) {
-            return ApiResponse.success(res, { data: dataCreate, conversation_id: conversation.id, route: this.routes, message: 'AI answer generated' });
+            return ApiResponse.success(res, { 
+                data: dataCreate, 
+                conversation_id: conversation.id,
+                conversation_name: conversation.name,
+                route: this.routes, 
+                message: 'AI answer generated' 
+            });
         }
         return ApiResponse.error(res, { dataCreate, route: this.routes });
     });
-    // Obtener conversaciones del usuario
+    // Obtener conversaciones del usuario (solo chat IA)
     static getConversationUser = catchErrors(async (req, res, next) => {
         const { user_id } = req.params;
-        const conversations = await this.serviceConversation.findAll({ where: { user_id }, include: this.includesConversation });
+        const conversations = await this.serviceConversation.findAll({ 
+            where: { user_id, is_chat_ia: true }, 
+            include: this.includesConversation,
+            order: [['updated_at', 'DESC']] // Mostrar las más recientes primero
+        });
         if (conversations) {
             return ApiResponse.success(res, { data: conversations, route: this.routes });
         }
-        return ApiResponse.error(res, { error: 'Conversation not found', route: this.routes, status: 404 });
+        return ApiResponse.error(res, { error: 'No chat conversations found', route: this.routes, status: 404 });
     });
 
     static getAll = catchErrors(async (req, res, next) => {
@@ -84,6 +124,37 @@ class AIQuestionController {
             return ApiResponse.success(res, { data, route: this.routes });
         }
         return ApiResponse.error(res, { error: 'AIQuestion not found', route: this.routes, status: 404 });
+    });
+
+    // Obtener historial de mensajes de una conversación específica
+    static getConversationHistory = catchErrors(async (req, res, next) => {
+        const { conversation_id } = req.params;
+        
+        // Verificar que la conversación existe
+        const conversation = await this.serviceConversation.findById(conversation_id);
+        if (!conversation) {
+            return ApiResponse.error(res, { 
+                error: 'Conversation not found', 
+                route: this.routes, 
+                status: 404 
+            });
+        }
+
+        // Obtener historial de mensajes ordenado por fecha de creación
+        const messages = await this.service.findAll({
+            where: { conversation_id },
+            order: [['created_at', 'ASC']],
+            attributes: ['id', 'question', 'answer', 'created_at']
+        });
+
+        return ApiResponse.success(res, { 
+            data: {
+                conversation,
+                messages 
+            },
+            route: this.routes,
+            message: 'Conversation history retrieved successfully'
+        });
     });
 }
 

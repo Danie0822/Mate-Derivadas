@@ -46,10 +46,17 @@ const aiQuestionSchema = z.object({
     .min(2, 'Question must be at least 2 characters'),
   answer: z.string().optional(),
   conversation_id: z.string().uuid().optional(),
+  is_chat_ia: z.boolean().optional().default(false),
 });
 
 const askAIQuestionRequestSchema = z.object({
-  body: aiQuestionSchema.omit({ id: true, answer: true }),
+  body: z.object({
+    user_id: z.string({ required_error: 'User ID is required' }).uuid('User ID must be a valid UUID'),
+    question: z.string({ required_error: 'Question is required' })
+      .min(2, 'Question must be at least 2 characters'),
+    conversation_id: z.string().uuid().optional().nullable(),
+    is_chat_ia: z.boolean().optional().default(false),
+  }),
 });
 
 

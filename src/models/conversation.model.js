@@ -9,6 +9,20 @@ class Conversation extends BaseEntity {
         user_id: {
           type: DataTypes.UUID,
           allowNull: false
+        },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: true
+        },
+        is_favorite: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false
+        },
+        is_chat_ia: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false
         }
       },
       {
