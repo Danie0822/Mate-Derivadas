@@ -21,4 +21,4 @@ ENV API_PORT=${API_PORT}
 EXPOSE ${API_PORT}
 
 # Comando por defecto para ejecutar la API
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "npx sequelize db:migrate && npm run dev"]
