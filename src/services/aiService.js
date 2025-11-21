@@ -119,7 +119,9 @@ async function getAIAnswer(question) {
                 options: {
                     temperature: 0.1,  // Temperatura muy baja para respuestas más consistentes y determinísticas
                     top_p: 0.9,
-                    num_predict: 200   // Limitar la longitud de la respuesta
+                    num_predict: 1500,   // Limitar la longitud de la respuesta
+                    repeat_penalty: 1.1,
+                    num_ctx: 4096
                 }
             },
             {
