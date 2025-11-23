@@ -33,6 +33,20 @@ const { z } = require('zod');
  *           type: string
  *           description: The AI's answer.
  *           example: "The derivative of x^2 is 2x."
+ *         is_chat_ia:
+ *           type: boolean
+ *           description: Whether this is an AI chat question.
+ *           example: false
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the question was created.
+ *           example: "2025-09-06T12:00:00.000Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the question was last updated.
+ *           example: "2025-09-06T12:00:00.000Z"
  */
 
 const params = z.object({

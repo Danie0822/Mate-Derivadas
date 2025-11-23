@@ -31,8 +31,16 @@ const {
  *     responses:
  *       201:
  *         description: Study guide created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StudyGuide'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post(
   '/',
@@ -49,6 +57,12 @@ router.post(
  *     responses:
  *       200:
  *         description: List of study guides
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/StudyGuide'
  */
 router.get('/', StudyGuideController.getAll);
 
@@ -68,8 +82,16 @@ router.get('/', StudyGuideController.getAll);
  *     responses:
  *       200:
  *         description: Study guide data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StudyGuide'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get('/:id', validateRequest(readStudyGuideRequestSchema), StudyGuideController.getById);
 
@@ -95,8 +117,16 @@ router.get('/:id', validateRequest(readStudyGuideRequestSchema), StudyGuideContr
  *     responses:
  *       200:
  *         description: Study guide updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StudyGuide'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put(
   '/:id',
@@ -120,8 +150,20 @@ router.put(
  *     responses:
  *       200:
  *         description: Study guide deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Study guide deleted successfully"
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete('/:id', validateRequest(deleteStudyGuideRequestSchema), StudyGuideController.destroy);
 

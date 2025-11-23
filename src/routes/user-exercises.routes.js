@@ -31,8 +31,16 @@ const {
  *     responses:
  *       201:
  *         description: User exercise created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserExercise'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post(
     '/',
@@ -49,6 +57,12 @@ router.post(
  *     responses:
  *       200:
  *         description: List of user exercise records
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UserExercise'
  */
 router.get('/', UserExerciseController.getAll);
 
@@ -68,8 +82,16 @@ router.get('/', UserExerciseController.getAll);
  *     responses:
  *       200:
  *         description: User exercise data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserExercise'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get('/:id', validateRequest(readUserExerciseRequestSchema), UserExerciseController.getById);
 
@@ -95,8 +117,16 @@ router.get('/:id', validateRequest(readUserExerciseRequestSchema), UserExerciseC
  *     responses:
  *       200:
  *         description: User exercise updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserExercise'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put(
     '/:id',
@@ -120,8 +150,20 @@ router.put(
  *     responses:
  *       200:
  *         description: User exercise deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User exercise deleted successfully"
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete('/:id', validateRequest(deleteUserExerciseRequestSchema), UserExerciseController.destroy);
 

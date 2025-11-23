@@ -47,6 +47,16 @@ const { z } = require('zod');
  *             type: string
  *           description: Tags associated with the exercise.
  *           example: ["calculus", "basic", "polynomial"]
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the exercise was created.
+ *           example: "2025-09-06T12:00:00.000Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the exercise was last updated.
+ *           example: "2025-09-06T12:00:00.000Z"
  */
 
 const params = z.object({

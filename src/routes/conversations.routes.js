@@ -10,6 +10,13 @@ const {
 
 /**
  * @swagger
+ * tags:
+ *   name: Conversations
+ *   description: Conversation management endpoints
+ */
+
+/**
+ * @swagger
  * /conversations/{id}/name:
  *   put:
  *     summary: Actualizar el nombre de una conversación
@@ -37,8 +44,16 @@ const {
  *     responses:
  *       200:
  *         description: Nombre actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Conversation"
  *       404:
  *         description: Conversación no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put(
     '/:id/name',
@@ -75,8 +90,16 @@ router.put(
  *     responses:
  *       200:
  *         description: Estado de favorito actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Conversation"
  *       404:
  *         description: Conversación no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put(
     '/:id/favorite',
@@ -101,8 +124,20 @@ router.put(
  *     responses:
  *       200:
  *         description: Conversación eliminada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Conversation deleted successfully"
  *       404:
  *         description: Conversación no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete(
     '/:id',
