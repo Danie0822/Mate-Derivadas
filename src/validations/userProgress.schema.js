@@ -34,6 +34,16 @@ const { z } = require('zod');
  *           format: date-time
  *           description: When the user completed this part.
  *           example: "2025-09-06T12:00:00.000Z"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the record was created.
+ *           example: "2025-09-06T12:00:00.000Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the record was last updated.
+ *           example: "2025-09-06T12:00:00.000Z"
  */
 
 const params = z.object({

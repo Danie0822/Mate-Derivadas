@@ -63,6 +63,16 @@ const { z } = require('zod');
  *             type: object
  *           description: Related exercises with metadata.
  *           example: [{ "exercise_id": "uuid", "title": "Practice Problem", "order": 1, "required": true }]
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the study guide was created.
+ *           example: "2025-09-06T12:00:00.000Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the study guide was last updated.
+ *           example: "2025-09-06T12:00:00.000Z"
  */
 
 const params = z.object({

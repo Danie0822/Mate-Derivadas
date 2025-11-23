@@ -9,6 +9,13 @@ const {
 } = require('../validations/aiQuestion.schema');
 /**
  * @swagger
+ * tags:
+ *   name: AIQuestions
+ *   description: AI question and answer management
+ */
+
+/**
+ * @swagger
  * /ai-questions/user/{user_id}:
  *   get:
  *     summary: Obtener todas las conversaciones de un usuario
@@ -24,8 +31,18 @@ const {
  *     responses:
  *       200:
  *         description: Lista de conversaciones del usuario
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Conversation"
  *       404:
  *         description: No se encontraron conversaciones
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get(
     '/user/:user_id',
@@ -51,12 +68,42 @@ router.get(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/AIQuestion'
+ *             type: object
+ *             required:
+ *               - user_id
+ *               - question
+ *             properties:
+ *               user_id:
+ *                 type: string
+ *                 format: uuid
+ *                 description: ID of the user asking the question
+ *                 example: "550e8400-e29b-41d4-a716-446655440000"
+ *               question:
+ *                 type: string
+ *                 description: The question to ask the AI
+ *                 example: "What is the derivative of x^2?"
+ *               conversation_id:
+ *                 type: string
+ *                 format: uuid
+ *                 description: Optional conversation ID to continue an existing conversation
+ *                 example: "550e8400-e29b-41d4-a716-446655440000"
+ *               is_chat_ia:
+ *                 type: boolean
+ *                 description: Whether this is an AI chat question
+ *                 example: false
  *     responses:
  *       201:
  *         description: AI answer generated and saved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AIQuestion'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post(
     '/ask',
@@ -73,6 +120,12 @@ router.post(
  *     responses:
  *       200:
  *         description: List of AI question records
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/AIQuestion'
  */
 router.get('/', AIQuestionController.getAll);
 
@@ -93,8 +146,18 @@ router.get('/', AIQuestionController.getAll);
  *     responses:
  *       200:
  *         description: Historial de mensajes de la conversación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/AIQuestion'
  *       404:
  *         description: Conversación no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get(
     '/conversation/:conversation_id/history',
@@ -117,8 +180,16 @@ router.get(
  *     responses:
  *       200:
  *         description: AI question data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AIQuestion'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get('/:id', validateRequest(readAIQuestionRequestSchema), AIQuestionController.getById);
 

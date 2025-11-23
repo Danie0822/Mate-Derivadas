@@ -31,8 +31,16 @@ const {
  *     responses:
  *       201:
  *         description: Exercise created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Exercise'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post(
     '/',
@@ -49,6 +57,12 @@ router.post(
  *     responses:
  *       200:
  *         description: List of exercises
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Exercise'
  */
 router.get('/', ExerciseController.getAll);
 
@@ -68,8 +82,16 @@ router.get('/', ExerciseController.getAll);
  *     responses:
  *       200:
  *         description: Exercise data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Exercise'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get('/:id', validateRequest(readExerciseRequestSchema), ExerciseController.getById);
 
@@ -95,8 +117,16 @@ router.get('/:id', validateRequest(readExerciseRequestSchema), ExerciseControlle
  *     responses:
  *       200:
  *         description: Exercise updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Exercise'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put(
     '/:id',
@@ -120,8 +150,20 @@ router.put(
  *     responses:
  *       200:
  *         description: Exercise deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Exercise deleted successfully"
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete('/:id', validateRequest(deleteExerciseRequestSchema), ExerciseController.destroy);
 
@@ -134,6 +176,20 @@ router.delete('/:id', validateRequest(deleteExerciseRequestSchema), ExerciseCont
  *     responses:
  *       200:
  *         description: Exercise select list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     format: uuid
+ *                   title:
+ *                     type: string
+ *                   topic:
+ *                     type: string
  */
 router.get('/select/all', ExerciseController.selectAll);
 

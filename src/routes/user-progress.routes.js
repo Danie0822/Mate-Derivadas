@@ -31,8 +31,16 @@ const {
  *     responses:
  *       201:
  *         description: User progress created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProgress'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post(
     '/',
@@ -49,6 +57,12 @@ router.post(
  *     responses:
  *       200:
  *         description: List of user progress records
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UserProgress'
  */
 router.get('/', UserProgressController.getAll);
 
@@ -68,8 +82,16 @@ router.get('/', UserProgressController.getAll);
  *     responses:
  *       200:
  *         description: User progress data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProgress'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get('/:id', validateRequest(readUserProgressRequestSchema), UserProgressController.getById);
 
@@ -95,8 +117,16 @@ router.get('/:id', validateRequest(readUserProgressRequestSchema), UserProgressC
  *     responses:
  *       200:
  *         description: User progress updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProgress'
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put(
     '/:id',
@@ -120,8 +150,20 @@ router.put(
  *     responses:
  *       200:
  *         description: User progress deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User progress deleted successfully"
  *       404:
  *         description: Not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete('/:id', validateRequest(deleteUserProgressRequestSchema), UserProgressController.destroy);
 

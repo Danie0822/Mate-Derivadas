@@ -39,6 +39,16 @@ const { z } = require('zod');
  *           type: string
  *           description: The user password.
  *           example: "Clave123!"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the user was created.
+ *           example: "2025-09-06T12:00:00.000Z"
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: When the user was last updated.
+ *           example: "2025-09-06T12:00:00.000Z"
  *     ErrorResponse:
  *       type: object
  *       properties:
